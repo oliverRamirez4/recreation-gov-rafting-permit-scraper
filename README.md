@@ -1,110 +1,11 @@
-# Campsite Availability Scraping
+# Rafting Permit Availability Scraper
 
-**This has been updated to work with the new recreation.gov site and API!!!**
-
-This script scrapes the https://recreation.gov website for campsite availabilities.
+This script scrapes https://recreation.gov for **rafting permit** availability. It checks permit divisions (entry points / river sections) and reports which dates still have remaining permits.
 
 **Note:** Please don't abuse this script. Most folks out there don't know how to run scrapers against websites, so you're at an unfair advantage by using this.
 
 ## Example Usage
-```
-$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232448 232450 232447 232770
-❌ TUOLUMNE MEADOWS: 0 site(s) available out of 148 site(s)
-🏕 LOWER PINES: 11 site(s) available out of 73 site(s)
-❌ UPPER PINES: 0 site(s) available out of 235 site(s)
-❌ BASIN MONTANA CAMPGROUND: 0 site(s) available out of 30 site(s)
-```
 
-You can also read from stdin. Define a file (e.g. `parks.txt`) with park IDs like this:
-```
-232447
-232449
-232450
-232448
-```
-and then use it like this:
-```
-$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --stdin < parks.txt
-```
-For powershell, try this:
-```
-PS > Get-Content parks.txt | python camping.py --start-date 2021-09-24 --end-date 2022-09-24 --stdin
-```
-
-If you want to see more information about which campsites are available, pass `--show-campsite-info` along with `--nights <int>`:
-```
-$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232448 232450 232447 232770 --show-campsite-info --nights 1 
-There are campsites available from 2018-07-20 to 2018-07-23!!!
-🏕 ELK CREEK CAMPGROUND (SAWTOOTH NF) (232042): 1 site(s) available out of 1 site(s)
-  * Site 69800 is available on the following dates:
-    * 2018-07-20 -> 2018-07-21 
-    * 2018-07-21 -> 2018-07-22
-```
-
-If you only want results for certain campsite IDs, pass `--campsite-ids <int>`:
-```bash
-$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232431 --show-campsite-info --nights 1 --campsite-ids 18621 
-```
-
-You'll want to put this script into a 5 minute crontab. You could also grep the output for the success emoji (🏕) and then do something in response, like notify you that there is a campsite available. See the "Twitter Notification" section below.
-
-## Number of nights
-If you're flexible on travel dates, you can search for a specific number of contiguous nights within a wide range of dates. This is useful for campgrounds in high-demand areas (like Yosemite Valley) or during peak season when openings are rare. Simply specify the `--nights` argument. For example, to search for a 5-day reservation in the month of June 2020 at Chisos Basin:
-```
-$ python camping.py --start-date 2020-06-01 --end-date 2020-06-30 --nights 5 234038
-There are campsites available from 2020-06-01 to 2020-06-30!!!
-🏕 CHISOS BASIN (BIG BEND) (234038): 13 site(s) available out of 62 site(s)
-```
-
-## Getting park IDs
-What you'll want to do is go to https://recreation.gov and search for the campground you want. Click on it in the search sidebar. This should take you to a page for that campground, the URL will look like `https://www.recreation.gov/camping/campgrounds/<number>`. That number is the park ID.
-
-## Getting campsite IDs
-Go to https://recreation.gov and first search for the campground you want and then select the specific campsite within that campground. The URL for the campsite should look like `https://www.recreation.gov/camping/campsites/<number>`. That number is the campsite ID.
-
-## Searching for availability at a specific campsite within a campground
-You can search for availability at just a single specific campsite using the '--campsite-ids' argument. This can be useful if you have a favorite campsite you like to use or if you have a reservation at a specific campsite that you want to add days to before or after your existing reservation. This search only works for one campground/campsite combination at a time.
-```
-$ python camping.py --start-date 2020-06-01 --end-date 2020-06-30 --nights 5 --parks 234038 --campsite-ids 6943
-There are campsites available from 2020-06-01 to 2020-06-30!!!
-🏕 CHISOS BASIN (BIG BEND) (234038): 1 site(s) available out of 62 site(s)
-```
-
-You can also take [this site for a spin](https://pastudan.github.io/national-parks/). Thanks to [pastudan](https://github.com/pastudan)!
-
-## Excluding specific campsites
-
-You can exclude specific campsites, for example group sites, by defining a file (e.g. `excluded.txt`) with one campsite ID per line and using the `--exclusion-file` argument like this:
-
-```
-$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232448 232450 232447 232770 --exclusion-file excluded.txt
-```
-
-## Installation
-
-I wrote this in Python 3.7 but I've tested it as working with 3.5 and 3.6 also.
-It is best to use 3.9+
-```
-python3 -m venv myvenv
-source myvenv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-# You're good to go!
-```
-
-## Development
-This code is formatted using black and isort:
-```
-black -l 80 --py36 camping.py
-isort camping.py
-```
-Note: `black` only really supports 3.6+ so watch out!
-
-## Rafting Permit Availability Scraping
-
-In addition to campsite availability, this project can also scrape **rafting permit** availability from recreation.gov.
-
-### Example Usage (Rafting)
 ```
 $ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393
 🚣 Desolation Gray - Green River Permit (233393): 1 division(s) with availability out of 1 division(s)
@@ -119,7 +20,9 @@ and then use it like this:
 $ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --stdin < permits.txt
 ```
 
-To see detailed information about which divisions/entry points have availability and how many permits remain, use `--show-division-info`:
+### Detailed Division Info
+
+To see which divisions/entry points have availability and how many permits remain, use `--show-division-info`:
 ```
 $ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --show-division-info
 there are permits available from 2026-06-01 to 2026-06-30!!!
@@ -128,17 +31,29 @@ there are permits available from 2026-06-01 to 2026-06-30!!!
     * 2026-06-01: 1/6 permits remaining
 ```
 
-To get JSON output:
+### Minimum Permits
+
+If your group needs multiple permits on the same launch date, use `--min-permits`:
 ```
-$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --json-output
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --min-permits 3
 ```
 
-To filter to weekends only:
+### Weekends Only
+
+To filter results to only Friday/Saturday launch dates:
 ```
 $ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --weekends-only
 ```
 
-### Getting Permit IDs
+### JSON Output
+
+To get machine-readable JSON output:
+```
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --json-output
+```
+
+## Getting Permit IDs
+
 Go to https://recreation.gov and search for the rafting permit or river you want. Click on it in the search results. The URL will look like `https://www.recreation.gov/permits/<number>`. That number is the permit ID.
 
 For example, the Desolation-Gray Canyons of the Green River permit is at:
@@ -146,45 +61,112 @@ For example, the Desolation-Gray Canyons of the Green River permit is at:
 
 So the permit ID is `233393`.
 
-### Rafting CLI Options
+## CLI Options
+
 | Argument | Description |
 |---|---|
 | `--permits` | Permit ID(s) from recreation.gov (required, or use `--stdin`) |
 | `--start-date` | Start date in YYYY-MM-DD format (required) |
 | `--end-date` | End date in YYYY-MM-DD format (required) |
 | `--show-division-info` | Show detailed division/entry point availability |
+| `--min-permits` | Minimum remaining permits to consider a date available (default: 1) |
 | `--json-output` | Output JSON instead of human-readable text |
 | `--weekends-only` | Only show Friday/Saturday launch dates |
 | `--debug` / `-d` | Enable debug logging |
 
-Feel free to submit pull requests, or look at the original: https://github.com/bri-bri/yosemite-camping
+## Installation
 
-### Running Tests
+Python 3.9+ is recommended.
+```
+python3 -m venv myvenv
+source myvenv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+# You're good to go!
+```
+
+## Running Tests
 
 All tests should pass before a pull request gets merged. To run all the tests, cd into the project directory and run:
 ```bash
 python -m unittest
-``` 
+```
 
-### Differences from the original
-- Python 3 🐍🐍🐍.
-- Park IDs not hardcoded, passed via the CLI instead.
-- Doesn't give you URLs for campsites with availabilities.
-- Works with any park out of the box, not just those in Yosemite like with the original.
-- **Update 2018-10-21:** Works with the new recreation.gov site.
+## Development
+
+This code is formatted using black and isort:
+```
+black -l 80 --py36 *.py
+isort *.py
+```
+Note: `black` only really supports 3.6+ so watch out!
+
+---
+
+## Campsite Availability Scraping
+
+This project also includes a **campsite availability** scraper, forked from [banool/recreation-gov-campsite-checker](https://github.com/banool/recreation-gov-campsite-checker).
+
+### Example Usage (Camping)
+```
+$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232448 232450 232447 232770
+❌ TUOLUMNE MEADOWS: 0 site(s) available out of 148 site(s)
+🏕 LOWER PINES: 11 site(s) available out of 73 site(s)
+❌ UPPER PINES: 0 site(s) available out of 235 site(s)
+❌ BASIN MONTANA CAMPGROUND: 0 site(s) available out of 30 site(s)
+```
+
+You can also read from stdin. Define a file (e.g. `parks.txt`) with park IDs:
+```
+232447
+232449
+232450
+232448
+```
+```
+$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --stdin < parks.txt
+```
+
+### Show Campsite Info
+
+Pass `--show-campsite-info` along with `--nights <int>` to see which campsites are available:
+```
+$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232448 232450 232447 232770 --show-campsite-info --nights 1
+```
+
+### Number of Nights
+
+Search for a specific number of contiguous nights within a date range using `--nights`:
+```
+$ python camping.py --start-date 2020-06-01 --end-date 2020-06-30 --nights 5 234038
+```
+
+### Getting Park IDs
+
+Go to https://recreation.gov and search for the campground you want. The URL will look like `https://www.recreation.gov/camping/campgrounds/<number>`. That number is the park ID.
+
+### Getting Campsite IDs
+
+Search for a campground and then select a specific campsite. The URL will look like `https://www.recreation.gov/camping/campsites/<number>`. That number is the campsite ID. Use it with `--campsite-ids`.
+
+### Excluding Specific Campsites
+
+Define a file (e.g. `excluded.txt`) with one campsite ID per line and use `--exclusion-file`:
+```
+$ python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 232448 --exclusion-file excluded.txt
+```
 
 ## Twitter Notification
-If you want to be notified about campsite availabilities via Twitter (they're the only API out there that is actually easy to use), you can do this:
-1. Make an app via Twitter. It's pretty easy, go to: https://developer.twitter.com/en/apps.
-2. Change the values in `twitter_credentials.json` to match your key values.
-3. Pipe the output of your command into `notifier.py`. See below for an example.
+
+If you want to be notified about availabilities via Twitter:
+1. Make an app at https://developer.twitter.com/en/apps.
+2. Update the values in `twitter_credentials.json` to match your keys.
+3. Pipe the output into `notifier.py`:
 
 ```
-python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 70926 70928 | python notifier.py @banool1
+python camping.py --start-date 2018-07-20 --end-date 2018-07-23 --parks 70926 70928 | python notifier.py @your_handle
 ```
 
-You'll want to make the app on another account (like a bot account), not your own, so you get notified when the tweet goes out.
+## Credits
 
-I left my API keys in here but don't exploit them ty thanks.
-
-**Thanks to https://github.com/bri-bri/yosemite-camping for getting me most of the way there for the old version.**
+Originally based on https://github.com/bri-bri/yosemite-camping. Campsite checker forked from [banool/recreation-gov-campsite-checker](https://github.com/banool/recreation-gov-campsite-checker).
