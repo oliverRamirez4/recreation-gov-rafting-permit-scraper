@@ -61,6 +61,25 @@ For example, the Desolation-Gray Canyons of the Green River permit is at:
 
 So the permit ID is `233393`.
 
+### Known River Permit IDs
+
+| Permit ID | River / Permit Name | State | Agency |
+|-----------|---------------------|-------|--------|
+| `233393` | Desolation Gray - Green River | UT | BLM |
+| `233394` | Colorado River (Grand Canyon) | AZ | NPS |
+| `233380` | Westwater Canyon - Colorado River | UT | BLM |
+| `234396` | Yampa & Green Rivers (Dinosaur NM) | CO/UT | NPS |
+| `250986` | San Juan River | UT | BLM |
+| `234622` | Salmon River - Main (4 Rivers) | ID | USFS |
+| `234623` | Middle Fork of the Salmon (4 Rivers) | ID | USFS |
+| `234621` | Selway River (4 Rivers) | ID | USFS |
+| `234167` | Hells Canyon - Snake River | ID/OR | USFS |
+| `250016` | Rogue River | OR | BLM |
+| `272170` | Deschutes River | OR | BLM |
+| `272604` | John Day River | OR | BLM |
+| `249498` | Owyhee River | OR | BLM |
+| `273498` | Illinois River | OR | USFS |
+
 ## CLI Options
 
 | Argument | Description |
