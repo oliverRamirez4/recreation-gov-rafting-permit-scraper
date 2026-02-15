@@ -16,6 +16,12 @@ class RecreationClient:
     )
     MAIN_PAGE_ENDPOINT = BASE_URL + "/api/camps/campgrounds/{park_id}"
 
+    # Permit endpoints
+    PERMIT_AVAILABILITY_ENDPOINT = (
+        BASE_URL + "/api/permits/{permit_id}/availability/month"
+    )
+    PERMIT_MAIN_PAGE_ENDPOINT = BASE_URL + "/api/permits/{permit_id}"
+
     headers = {"User-Agent": user_agent.generate_user_agent() }
     
     @classmethod
@@ -34,6 +40,23 @@ class RecreationClient:
             cls.MAIN_PAGE_ENDPOINT.format(park_id=park_id), {}
         )
         return resp["campground"]["facility_name"]
+
+    @classmethod
+    def get_permit_availability(cls, permit_id, month_date):
+        params = {"start_date": formatter.format_date(month_date)}
+        LOG.debug(
+            "Querying permit {} with these params: {}".format(permit_id, params)
+        )
+        url = cls.PERMIT_AVAILABILITY_ENDPOINT.format(permit_id=permit_id)
+        resp = cls._send_request(url, params)
+        return resp
+
+    @classmethod
+    def get_permit_info(cls, permit_id):
+        resp = cls._send_request(
+            cls.PERMIT_MAIN_PAGE_ENDPOINT.format(permit_id=permit_id), {}
+        )
+        return resp
 
     @classmethod
     def _send_request(cls, url, params):

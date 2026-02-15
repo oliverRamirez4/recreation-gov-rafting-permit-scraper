@@ -100,6 +100,63 @@ isort camping.py
 ```
 Note: `black` only really supports 3.6+ so watch out!
 
+## Rafting Permit Availability Scraping
+
+In addition to campsite availability, this project can also scrape **rafting permit** availability from recreation.gov.
+
+### Example Usage (Rafting)
+```
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393
+🚣 Desolation Gray - Green River Permit (233393): 1 division(s) with availability out of 1 division(s)
+```
+
+You can also read from stdin. Define a file (e.g. `permits.txt`) with permit IDs:
+```
+233393
+```
+and then use it like this:
+```
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --stdin < permits.txt
+```
+
+To see detailed information about which divisions/entry points have availability and how many permits remain, use `--show-division-info`:
+```
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --show-division-info
+there are permits available from 2026-06-01 to 2026-06-30!!!
+🚣 Desolation Gray - Green River Permit (233393): 1 division(s) with availability out of 1 division(s)
+  * Desolation-Gray Canyons of the Green River (Division 282):
+    * 2026-06-01: 1/6 permits remaining
+```
+
+To get JSON output:
+```
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --json-output
+```
+
+To filter to weekends only:
+```
+$ python rafting.py --start-date 2026-06-01 --end-date 2026-06-30 --permits 233393 --weekends-only
+```
+
+### Getting Permit IDs
+Go to https://recreation.gov and search for the rafting permit or river you want. Click on it in the search results. The URL will look like `https://www.recreation.gov/permits/<number>`. That number is the permit ID.
+
+For example, the Desolation-Gray Canyons of the Green River permit is at:
+`https://www.recreation.gov/permits/233393`
+
+So the permit ID is `233393`.
+
+### Rafting CLI Options
+| Argument | Description |
+|---|---|
+| `--permits` | Permit ID(s) from recreation.gov (required, or use `--stdin`) |
+| `--start-date` | Start date in YYYY-MM-DD format (required) |
+| `--end-date` | End date in YYYY-MM-DD format (required) |
+| `--show-division-info` | Show detailed division/entry point availability |
+| `--json-output` | Output JSON instead of human-readable text |
+| `--weekends-only` | Only show Friday/Saturday launch dates |
+| `--debug` / `-d` | Enable debug logging |
+
 Feel free to submit pull requests, or look at the original: https://github.com/bri-bri/yosemite-camping
 
 ### Running Tests
